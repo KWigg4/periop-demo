@@ -1,0 +1,18 @@
+@'
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Secrets
+.env
+'@ | Set-Content .gitignore

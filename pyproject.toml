@@ -1,0 +1,7 @@
+[tool.uv.workspace]
+members = ["py-app"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+]

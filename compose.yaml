@@ -1,0 +1,7 @@
+services:
+  periop-r:
+    build: .
+    image: periop-demo:0.3
+    ports:
+      - "8080:3838"
+    restart: unless-stopped

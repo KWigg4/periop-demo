@@ -1,0 +1,27 @@
+[project]
+name = "py-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Kimberly T Wiggins", email = "kimberlyt.wiggins@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=3.1.0",
+    "plotnine>=0.15.8",
+    "pydantic-ai-slim[anthropic]>=2.63.0",
+    "shiny>=1.8.0",
+]
+
+[project.scripts]
+py-app = "py_app:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+]
