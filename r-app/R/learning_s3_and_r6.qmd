@@ -1,0 +1,189 @@
+---
+title: "S3 and R6 tutorial"
+format: html
+execute:
+  warning: false
+---
+
+```{r}
+#| label: setup
+# install.packages("pacman")
+pacman::p_load(R6)
+```  
+
+## R6  
+Does a different job than S3: where s3 is a "list with a label", R6 creates an object that holds its own data and its own functions together. 
+
+You reach both with `$`. 
+
+**Step 1: Define a class with just data and make one.**  
+
+- `R6Class()` will create a blueprint called `Deployment` that says that each deployment has a `client` and a `status`.  
+- `Deployment$new()` builds one actual deployment from that blueprint, stored below as `d`.  
+- Still here looks like a list.   
+```{r}
+library(R6)   # install.packages("R6") first if needed
+
+Deployment <- R6Class("Deployment",
+  public = list(
+    client = NULL,
+    status = "not started"
+  )
+)
+
+d <- Deployment$new()
+d$client <- "Health System A"
+d$client
+d$status
+```  
+
+**Step 2: Give the blueprint a function of its own.**  
+
+Now the deployment carries its own function `advance`, called with `d$advance(...)`. 
+
+This is the big difference from S3: in S3, you call summary(x) and R goes looking for the right function; in R6, the function lives INSIDE the object.  
+
+Here the new word is `self`, which, inside this blueprint, means "this particular object". So `self$status <- new_status` means "change my own status." It is like `object` in the summary method: a name for a thing being worked on. But here you don't write it in the parentheses, R6 supplies it automatically. 
+
+So the below function will change new_status from not started to data loaded (or whatever the new status is).
+
+```{r}
+Deployment <- R6Class("Deployment",
+  public = list(
+    client = NULL,
+    status = "not started",
+    advance = function(new_status) {
+      self$status <- new_status
+    }
+  )
+)
+
+d <- Deployment$new()
+d$client <- "Health System A"
+d$advance("data loaded")
+d$status
+```  
+
+**Step 3: Copies vs shared objects**  
+
+Ordinary R objects behave like this, where in the ex below, `a$status` will still say `not started`. Writing `b <- a` gives b its own copy, so changing `b` leaves `a` alone. 
+
+```{r}
+a <- list(status = "not started")
+b <- a
+b$status <- "done"
+a$status
+```  
+
+Now, with R6, d1$status can be changed to say `done` even though you only changed `d2`. With R6, `d2 <- d1` doesn't make a copy. It gives the same object a second name. `d1` and `d2` are two names both pointing at one deployment, so a change through either name shows up in both. 
+
+```{r}
+d1 <- Deployment$new()
+d2 <- d1
+d2$advance("done")
+d1$status
+```  
+
+This connects to functions: Normally, a fn gets its own copy of what you pass in, works on it in that temp workspace, and original stays untouched. With R6, the function works on the real object
+
+
+```{r}
+mark_qc_done <- function(dep){
+    dep$advance("QC_complete")
+}
+
+mark_qc_done(d1)
+d1$status
+```  
+
+Why that’s useful:
+Picture a Shiny app or pipeline where several pieces need to work with the same client deployment: one loads the data, another runs QC, another shows the status on screen. With R6, they all hold the same object, so when one piece updates the status, every other piece sees it immediately. With ordinary R objects, each piece would have its own copy, and you’d have to keep passing updated versions around. That shared, changeable state is the main reason teams reach for R6. (If you ever do want a separate copy, d1$clone() makes one.)
+
+How to say it: “R6 objects are mutable and passed by reference: they change in place, and every name pointing to one sees the same changes. That makes them good for things with state, like a client configuration or a pipeline tracking its progress.”
+
+**Step 4: A setup function that runs automatically**   
+
+So far we're creating a deployment and then setting the client (hospital you're working with) in a separate line. That means someone could forget, and you'd have a deployment with no client (i.e. you could create a tracking record without ever saying which hospital it's for. Like a REDCap ID with no record. `initialize` forces you to supply the name at creation so that can't happen).  
+
+R6 lets you require the client at the moment of creation. 
+
+`initialize` is a special name in R6. Whenever you call `Deployment$new(...)`, R6 automatically runs `initialize`, passing along whatever you put in the parentheses. So `Deployment$new("Health System A")` runs `initialize` with `client = "Health System A"`, and the new deployment starts life with its client already set.
+ 
+ ```{r}
+ Deployment <- R6Class("Deployment",
+  public = list(
+    client = NULL,
+    status = "not started",
+    initialize = function(client) {
+      self$client <- client
+    },
+    advance = function(new_status) {
+      self$status <- new_status
+    }
+  )
+)
+
+d <- Deployment$new("Health System A")
+d$client
+d$status
+ ```  
+
+ ### R6 example 2  
+
+ Imagine you’re managing data for several studies at once. For each study, you have a name, a dataset, and a status (data received, QC done, report sent). Today you’d probably track that with separate variables in a script, or a spreadsheet. An R6 object bundles all of that into one thing per study that holds its own data, knows its own status, and has its own functions for doing the work.
+
+Here’s a version that actually does something, using the built-in airquality dataset, which has missing values. 
+
+Read it like a description of a study tracker. `Study$new("Diabetes trial")` creates a tracker for one study and records its name. `trial$load(airquality)` hands that study its dataset and updates the status. `trial$check()` runs a QC check on the study's own data and records the result. At every point, `trial` remembers its name, its data, and where it is in the process. 
+
+If you had 3 studies, you'd make 3 trackers, `Study$new("Trial A")`, and so on, and each would hold its own data and status separately, all using the same `load` and `check` code. 
+
+It’s also fair to say: R6 solves a problem that mostly shows up in bigger systems, like an app juggling many clients at once. 
+
+```{r}
+Study <- R6Class("Study",
+  public = list(
+    name = NULL,
+    data = NULL,
+    status = "not started",
+
+    initialize = function(name) {
+      self$name <- name
+    },
+
+    load = function(df) {
+      self$data <- df
+      self$status <- "data loaded"
+    },
+
+    check = function() {
+      n_missing <- sum(is.na(self$data))
+      if (n_missing == 0) {
+        self$status <- "QC passed"
+      } else {
+        self$status <- paste("QC flagged", n_missing, "missing values")
+      }
+    }
+  )
+)
+
+trial <- Study$new("Diabetes trial")
+trial$status          # "not started"
+
+trial$load(airquality)
+trial$status          # "data loaded"
+
+trial$check()
+trial$status          # "QC flagged 44 missing values"
+```  
+
+## 3 practical differences: R6 v list  
+
+1. Functions live inside the object and work on its own data through `self`, so you call `trial$check()` rather than keeping a separate `check_list()` around and remembering to pass the right list to it. 
+
+2. changes happen in place, so you can't lose an update by forgetting to reassign. 
+
+3. The blueprint guarantees the structure: every `Study` has the same fields and the same funcitons, and `initialize` means none can exist without a name. With lists, nothing stops one study's list from having `status` and another's from having `stat` (instead of `status` like the other). 
+
+**An R6 object is like a list that carries its own functions and updates itself in place. Classes guarantee every object has the same structure.**  
+

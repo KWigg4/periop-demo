@@ -9,7 +9,6 @@
 
 
 # ---- 1. Build the object ---------------------------------------------------
-
 qc_compare <- function(app, legacy, by, metric, tolerance = 0.01) {
   # Check inputs before doing anything
   stopifnot(is.data.frame(app), is.data.frame(legacy))
