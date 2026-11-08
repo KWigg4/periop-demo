@@ -1,0 +1,205 @@
+[
+  {
+    "note_id": "N01",
+    "routed": [],
+    "routing_reason": "The note covers a site visit about workflow, staffing, and a CGM pilot scheduling decision. It does not describe any patient event, consent or enrollment problem, or protocol deviation, so the safety_screener is not needed.",
+    "extractor": {
+      "visit_date": "2026-03-04",
+      "practice": "Riverside Family Medicine",
+      "strategies_used": [
+        "Met with the office manager and two MAs",
+        "Reviewed the CGM workflow draft",
+        "Agreed to pilot sensor starts on Thursday afternoons"
+      ],
+      "barriers": [
+        "MAs said they don't have time during rooming to start sensors",
+        "One MA questioned whether CGM data changes treatment"
+      ],
+      "follow_up_planned": true
+    },
+    "coder": {
+      "codes": [
+        {
+          "code": "LEADERSHIP_ENGAGEMENT",
+          "excerpt": "The medical director joined for the first 10 minutes and said diabetes outcomes are a top priority this year.",
+          "rationale": "The medical director's participation and statement of priority show leadership commitment to the program."
+        },
+        {
+          "code": "AVAILABLE_RESOURCES",
+          "excerpt": "The MAs said they don't have time during rooming to start sensors",
+          "rationale": "MAs report insufficient staff time during rooming to carry out sensor starts."
+        },
+        {
+          "code": "STAFF_KNOWLEDGE_BELIEFS",
+          "excerpt": "one asked whether CGM data even changes treatment",
+          "rationale": "The MA's question expresses skepticism about the clinical value of CGM data."
+        }
+      ]
+    }
+  },
+  {
+    "note_id": "N02",
+    "routed": [],
+    "routing_reason": "The note covers an EHR template delay and manual PDF scanning workflow for CGM reports. It does not describe any patient adverse event, consent or enrollment problem, or protocol deviation, so the safety_screener is not needed.",
+    "extractor": {
+      "visit_date": "2026-03-11",
+      "practice": "Mesa Internal Medicine",
+      "strategies_used": [
+        "Staff scanning PDF CGM reports into the chart as a workaround"
+      ],
+      "barriers": [
+        "EHR template for CGM reports not yet built",
+        "IT has the template request queued behind other requests",
+        "Scanning PDF reports takes about 15 minutes each"
+      ],
+      "follow_up_planned": false
+    },
+    "coder": {
+      "codes": [
+        {
+          "code": "EHR_TECHNOLOGY",
+          "excerpt": "The EHR template for CGM reports still isn't built; IT says it's in the queue behind other requests.",
+          "rationale": "Describes an unbuilt EHR template and IT support delays affecting the program."
+        },
+        {
+          "code": "AVAILABLE_RESOURCES",
+          "excerpt": "Staff are scanning PDF reports into the chart, which takes about 15 minutes each.",
+          "rationale": "Shows staff time being consumed by a manual workaround, indicating a resource burden."
+        },
+        {
+          "code": "LEADERSHIP_ENGAGEMENT",
+          "excerpt": "The practice lead seemed frustrated but committed to keep going.",
+          "rationale": "Indicates the practice leader's ongoing commitment to the program despite frustration."
+        }
+      ]
+    }
+  },
+  {
+    "note_id": "N03",
+    "routed": [
+      "safety_screener"
+    ],
+    "routing_reason": "The note describes an adverse event: a patient reported dizziness and a fall at home after an insulin dose adjustment based on CGM readings, and she was seen in urgent care. This requires safety screening.",
+    "extractor": {
+      "visit_date": "2026-03-18",
+      "practice": "Riverside Family Medicine",
+      "strategies_used": [
+        "Started pilot with five patients on CGM",
+        "Adjusted insulin dose based on CGM readings",
+        "Clinician reviewing the patient's adverse event"
+      ],
+      "barriers": [
+        "One patient reported dizziness and a fall at home after insulin dose adjustment based on CGM readings; seen in urgent care and released"
+      ],
+      "follow_up_planned": false
+    },
+    "coder": {
+      "codes": [
+        {
+          "code": "STAFF_KNOWLEDGE_BELIEFS",
+          "excerpt": "Staff are otherwise positive about the workflow.",
+          "rationale": "This statement directly describes staff attitudes, specifically positive enthusiasm, toward the pilot workflow."
+        }
+      ]
+    },
+    "safety_screener": {
+      "possible_safety_event": true,
+      "event_type": "adverse_event",
+      "reason": "A patient on the CGM pilot reported dizziness and a fall at home after an insulin dose adjustment based on CGM readings, requiring urgent care evaluation, which is a possible adverse event needing human review for causality and seriousness."
+    }
+  },
+  {
+    "note_id": "N04",
+    "routed": [],
+    "routing_reason": "The note covers site logistics (smartphone access limits for the app-based CGM reader, loaner reader discussion, Spanish-language materials, staff training needs) and does not describe any patient adverse event, consent or enrollment problem, or protocol deviation, so the safety screener is not needed.",
+    "extractor": {
+      "visit_date": "2026-03-20",
+      "practice": "Foothills Community Clinic",
+      "strategies_used": [
+        "Discussed loaner readers"
+      ],
+      "barriers": [
+        "Many patients have limited smartphone access, so the app-based CGM reader won't work for them",
+        "Spanish-language patient materials are needed",
+        "Front desk staff requested training on how to explain the program to patients"
+      ],
+      "follow_up_planned": false
+    },
+    "coder": {
+      "codes": [
+        {
+          "code": "PATIENT_NEEDS",
+          "excerpt": "Many patients here have limited smartphone access, so the app-based CGM reader won't work for them.",
+          "rationale": "Describes patients' limited technology access as a barrier to using the app-based CGM reader."
+        },
+        {
+          "code": "PATIENT_NEEDS",
+          "excerpt": "Spanish-language patient materials are needed.",
+          "rationale": "Identifies a patient language need requiring Spanish-language materials."
+        },
+        {
+          "code": "STAFF_KNOWLEDGE_BELIEFS",
+          "excerpt": "Front desk staff asked for training on how to explain the program to patients.",
+          "rationale": "Front desk staff expressed a training need regarding explaining the program."
+        }
+      ]
+    }
+  },
+  {
+    "note_id": "N05",
+    "routed": [
+      "safety_screener"
+    ],
+    "routing_reason": "The note reports two patients enrolled before consent forms were signed, which is a consent problem and protocol deviation, so the safety screener should review it.",
+    "extractor": {
+      "visit_date": "2026-04-01",
+      "practice": "Mesa Internal Medicine",
+      "strategies_used": [
+        "Coordinator caught the consent issue the same week and contacted the study team",
+        "Practice paused new enrollments until the consent process is fixed",
+        "Scheduled a call with the study coordinator for Friday"
+      ],
+      "barriers": [
+        "Two patients were enrolled before their consent forms were signed"
+      ],
+      "follow_up_planned": true
+    },
+    "coder": {
+      "codes": []
+    },
+    "safety_screener": {
+      "possible_safety_event": true,
+      "event_type": "protocol_deviation",
+      "reason": "Two patients were enrolled before signing consent forms, which is a possible informed consent/enrollment protocol deviation requiring human review."
+    }
+  },
+  {
+    "note_id": "N06",
+    "routed": [],
+    "routing_reason": "The note describes a site visit about CGM review agenda changes and EHR integration efficiency; it mentions no patient adverse event, consent or enrollment problem, or protocol deviation, so the safety screener is not needed.",
+    "extractor": {
+      "visit_date": "2026-04-08",
+      "practice": "Foothills Community Clinic",
+      "strategies_used": [
+        "Added CGM review to the monthly quality meeting agenda",
+        "EHR integration went live"
+      ],
+      "barriers": [],
+      "follow_up_planned": true
+    },
+    "coder": {
+      "codes": [
+        {
+          "code": "LEADERSHIP_ENGAGEMENT",
+          "excerpt": "The new medical director is enthusiastic and added CGM review to the monthly quality meeting agenda.",
+          "rationale": "The medical director's enthusiasm and addition of CGM review to the meeting agenda show leadership support for and commitment to the program."
+        },
+        {
+          "code": "EHR_TECHNOLOGY",
+          "excerpt": "The EHR integration went live last week, and MAs say pulling reports now takes under a minute.",
+          "rationale": "The note describes a newly live EHR integration that speeds up report pulling."
+        }
+      ]
+    }
+  }
+]
