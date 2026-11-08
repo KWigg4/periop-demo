@@ -26,7 +26,7 @@ summary(qc)        # calls summary.qc_comparison()
 n_mismatches(qc)   # our own generic, dispatching to n_mismatches.qc_comparison()
 head(as.data.frame(qc))
 
-n_mismatches(app)  # a plain data frame: falls through to the default method and errors
+n_mismatches(app)  # a plain data frame: falls through to the default method and ERRORS
 
 # See which methods exist for our class
 methods(class = "qc_comparison")

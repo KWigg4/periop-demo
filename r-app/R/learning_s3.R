@@ -29,9 +29,25 @@ n_bad.qc_result <- function(x, ...) x$n_bad
 n_bad(x)
 
 # trying it with summary 
-summary.qc_result <- function(x, ...){
-  cat("PASS: all rows of", object$metric, "match the legacy report\n")
-} else {
-  cat("REVIEW:", object$n_bad, "rows of", object$metric, "need closer review")
+summary.qc_result <- function(object, ...) {
+  if (object$n_bad == 0) {
+    cat("PASS: all rows of", object$metric, "match the legacy report\n")
+  } else {
+    cat("REVIEW:", object$n_bad, "rows of", object$metric, "need closer review\n")
+  }
 }
 
+x$n_bad <- 0
+summary(x)
+
+
+# trying on my own: 
+print.qc_result <- function(test, ...){
+ cat("qc_result for ", test$metric, " (", test$n_bad, " flagged)\n", sep="")
+}
+
+y <- list(metric = "length of stay", n_bad = 5)
+class(y) <- "qc_result"
+
+x
+y
